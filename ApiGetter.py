@@ -123,7 +123,6 @@ def get_merge_requests_page(project_id, access_token,page_number,start_date,end_
         # organized_merge_requests.append({"project_creation_date":get_project_creation_date(project_id,access_token)})
         for merge_request in merge_requests:
             merge_request_id = merge_request.get("iid")
-            print("\n----",merge_request_id)
 
             # Request merge request details
             merge_request_api_url = f"https://gitlab.com/api/v4/projects/{project_id}/merge_requests/{merge_request_id}"
@@ -141,9 +140,9 @@ def get_merge_requests_page(project_id, access_token,page_number,start_date,end_
                 
                 if not (start_date <= datetime.strptime(merge_request_details["created_at"], '%Y-%m-%dT%H:%M:%S.%fZ')<= end_date): 
                     #If a start date is specified and the merge request creation date is not on the interval, the processus is not done
-                    print("merge request skiped")
+    
                     continue
-            print("merge request collected")                
+                        
             # Construct the organized merge request object
 
             organized_commit = {
@@ -201,7 +200,7 @@ def get_merge_requests_page(project_id, access_token,page_number,start_date,end_
 
             organized_merge_requests.append(organized_merge_request)
 
-        print_json_schema(organized_merge_requests)
+        #print_json_schema(organized_merge_requests)
         save_json_responses_to_file(project_id, organized_merge_requests,access_token)
 
     else:
@@ -304,6 +303,5 @@ def get_merge_requests(project_id, access_token,start_Date_Vizu = None,end_dateV
     global_page_nb = getnbpage(global_mr_nb, 20)
     print(global_page_nb)
     for page in range(1, global_page_nb + 1):
-        print("page",page)
         is_Finish = get_merge_requests_page(project_id, access_token, page,start_Date_Vizu,end_dateVizu)
         if is_Finish : break
