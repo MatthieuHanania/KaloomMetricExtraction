@@ -1,0 +1,20 @@
+{
+    "parameters": {
+        "MR_ID": 0,
+        "project_ids": [
+            29738620
+        ],
+        "start_Date_Vizu": "2023-05-11T12:29:35.748Z",
+        "end_Date_Vizu": "2023-06-30T13:27:58.174Z",
+        "output_folder": "./results/",
+        "days_per_sprint": 1,
+        "get_all_project": false
+    },
+    "gitlab": {
+        "auth_token": "glpat-YhUuMY-BYrEqCzcV2fzR",
+        "base_url": "https://gitlab.com"
+    },
+    "general_info": {
+        "creation_date": "2021-09-20T06:27:23.062Z"
+    }
+}
