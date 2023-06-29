@@ -2,11 +2,10 @@ import json
 import math
 import os
 import requests
+from datetime import datetime
 
-from globalFunctions import localTimeConverter
 
-
-def save_json_responses_to_file(project_id, merge_requests):
+def save_json_responses_to_file(project_id, merge_requests,gitlabAuth):
     """
     Save the merge requests data to a JSON file.
 
@@ -33,6 +32,9 @@ def save_json_responses_to_file(project_id, merge_requests):
         # Append new data to the existing data
         existing_data.extend(merge_requests)
         merge_requests = existing_data
+    else:
+
+        merge_requests.insert(0,{"Project_creation_date":get_project_creation_date(project_id,gitlabAuth)})
 
     # Save the updated data to the file
     with open(file_path, "w") as file:
@@ -130,13 +132,14 @@ def get_merge_requests_page(project_id, access_token,page_number,start_date,end_
 
 
             if end_date :
-                if localTimeConverter(merge_request_details["created_at"])< start_date:
+                if  datetime.strptime(merge_request_details["created_at"], '%Y-%m-%dT%H:%M:%S.%fZ')< start_date:
                     #stop the function when the merge request is before the first date to vizualise
-                    save_json_responses_to_file(project_id, organized_merge_requests)
+                    save_json_responses_to_file(project_id, organized_merge_requests,access_token
+                    )
                     print("finish")
                     return True
                 
-                if not (start_date <= localTimeConverter(merge_request_details["created_at"]) <= end_date):
+                if not (start_date <= datetime.strptime(merge_request_details["created_at"], '%Y-%m-%dT%H:%M:%S.%fZ')<= end_date): 
                     #If a start date is specified and the merge request creation date is not on the interval, the processus is not done
                     print("merge request skiped")
                     continue
@@ -199,7 +202,7 @@ def get_merge_requests_page(project_id, access_token,page_number,start_date,end_
             organized_merge_requests.append(organized_merge_request)
 
         print_json_schema(organized_merge_requests)
-        save_json_responses_to_file(project_id, organized_merge_requests)
+        save_json_responses_to_file(project_id, organized_merge_requests,access_token)
 
     else:
         print(f"Error: {response.status_code} - {response.text}")
@@ -304,4 +307,3 @@ def get_merge_requests(project_id, access_token,start_Date_Vizu = None,end_dateV
         print("page",page)
         is_Finish = get_merge_requests_page(project_id, access_token, page,start_Date_Vizu,end_dateVizu)
         if is_Finish : break
-

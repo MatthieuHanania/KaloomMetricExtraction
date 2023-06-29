@@ -1,8 +1,8 @@
 import getopt
 import sys
 import json
+from datetime import datetime
 
-from globalFunctions import localTimeConverter
 from ApiGetter import get_project_creation_date,get_merge_requests
 
 def printUsage():
@@ -31,11 +31,11 @@ class Main:
             self.gitlabBaseUrl = config_data['gitlab']['base_url']
             self.get_all_project = config_data['parameters']['get_all_project']
 
-            self.project_creation_date = get_project_creation_date(self.project_ids[0],self.gitlabAuth)
+        #     self.project_creation_date = get_project_creation_date(self.project_ids[0],self.gitlabAuth)
         
-        config_data["general_info"]={"creation_date":self.project_creation_date}
-        with open(arg, 'w') as f:
-            json.dump(config_data, f, indent=4)
+        # config_data["general_info"]={"creation_date":self.project_creation_date}
+        # with open(arg, 'w') as f:
+        #     json.dump(config_data, f, indent=4)
 
         return True
 
@@ -71,6 +71,10 @@ class Main:
         self.generateJsonMR()
 
     def generateJsonMR(self):
+
+        self.start_Date_Vizu = datetime.strptime(self.start_Date_Vizu, '%Y-%m-%dT%H:%M:%S.%fZ')
+        self.end_Date_Vizu= datetime.strptime(self.end_Date_Vizu, '%Y-%m-%dT%H:%M:%S.%fZ')
+        
         for project_id in self.project_ids:
             print(self.get_all_project)
             if self.get_all_project:
@@ -78,8 +82,11 @@ class Main:
                 get_merge_requests(project_id, self.gitlabAuth)
             else:
                 print("Project",project_id,"from",self.start_Date_Vizu,"to",self.end_Date_Vizu)
-                self.start_Date_Vizu = localTimeConverter(self.start_Date_Vizu)
-                self.end_Date_Vizu= localTimeConverter(self.end_Date_Vizu)
+                # self.start_Date_Vizu = localTimeConverter(self.start_Date_Vizu)
+                # self.end_Date_Vizu= localTimeConverter(self.end_Date_Vizu)
+                
+                
+
                 get_merge_requests(project_id, self.gitlabAuth, self.start_Date_Vizu,self.end_Date_Vizu)
 
 
